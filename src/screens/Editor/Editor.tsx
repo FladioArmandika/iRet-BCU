@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { Header, Panel, Threed, FloorView } from '@components/index';
+import { Header, Threed, FloorView } from '@components/index';
 import { css } from '@styles/index';
 import { rootState } from '@stores/createStore';
+
+import MenuPanel from './MenuPanel';
+import ComponentControls from './ComponentControls';
 
 interface Props {}
 
@@ -28,8 +31,13 @@ const Editor: React.FC<Props> = () => {
     navigation.navigate('Construction');
   };
 
+  useEffect(() => {
+    console.log('app')
+    console.log(app)
+  }, [])
+
   return (
-    <SafeAreaView style={css('flex-1')}>
+    <SafeAreaView style={css('flex-1 h-full')}>
       <Header />
       {currentFloor && (
         <View style={css('flex-1')}>
@@ -63,7 +71,11 @@ const Editor: React.FC<Props> = () => {
         step={1}
         onValueChange={(value) => this.setState({ grid: value })}
       /> */}
-      <Panel goToConstructionManagement={goToConstructionManagement} />
+      {/* {app.roomFocused ? ( */}
+        {/* <ComponentControls room={app.roomFocused} /> */}
+      {/* ) : ( */}
+        <MenuPanel goToConstructionManagement={goToConstructionManagement} />
+      {/* )} */}
     </SafeAreaView>
   );
 };

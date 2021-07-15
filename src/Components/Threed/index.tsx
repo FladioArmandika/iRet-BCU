@@ -57,6 +57,8 @@ class RoomMesh extends Mesh {
       new MeshStandardMaterial({
         color: 0xff0000,
         // side: THREE.BackSide,
+        roughness: 10,
+        metalness: 10,
         wireframe: true,
         transparent: true,
       }),
@@ -120,11 +122,11 @@ export default function Threed(props: Props) {
         // eslint-disable-next-line no-console
         console.log(props.floors[indexFloor].rooms);
         const room = new RoomMesh();
-        scene.add(room);
-        // room.material = new THREE.MeshPhysicalMaterial({
+
+        // room.material = new THREE.MeshBasicMaterial({
         //   color: getColor(props.floors[indexFloor].rooms[i].color),
-        //   transparent: true,
-        //   opacity: 0.8,
+        //   // transparent: true,
+        //   // opacity: 0.8,
         // });
         room.scale.x = props.floors[indexFloor].rooms[i].width / SCALE;
         room.scale.y = props.floors[indexFloor].rooms[i].depth / (SCALE - 25);
@@ -139,6 +141,7 @@ export default function Threed(props: Props) {
             props.floors[indexFloor].rooms[i].height / 2) /
             SCALE,
         );
+        scene.add(room);
         // const geo: EdgesGeometry = new THREE.EdgesGeometry(room.geometry);
         // const mat: LineBasicMaterial = new THREE.LineBasicMaterial({
         //   color: 0x000000,

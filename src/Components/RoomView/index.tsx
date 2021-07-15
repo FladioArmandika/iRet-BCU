@@ -107,6 +107,8 @@ const RoomView: React.FC<Props> = ({
     event: GestureResponderEvent,
     gestureState: PanResponderGestureState,
   ) => {
+    // eslint-disable-next-line no-console
+    console.log('TOUCHED');
     setState((prevState) => ({ ...prevState, active: true }));
   };
   const handlePanResponderEnd = (

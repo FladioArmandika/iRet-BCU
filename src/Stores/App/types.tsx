@@ -27,6 +27,8 @@ export const ACTION_SHOW_3D = 'ACTION_SHOW_3D';
 export const ACTION_CONSTRUCTION_CREATE = 'ACTION_CONSTRUCTION_CREATE';
 export const ACTION_MATERIAL_CREATE = 'ACTION_MATERIAL_CREATE';
 
+export const ACTION_SHOW_COMPONENT_CONTROL = 'ACTION_SHOW_COMPONENT_CONTROL';
+
 export type MaterialList = {
   mass: MaterialMass[];
   noMass: MaterialNoMass[];
@@ -46,6 +48,8 @@ export type AppState = {
   colors: string[];
   construction: Construction[];
   materials: MaterialList;
+
+  roomFocused: Room;
 };
 
 type AddRoomAction = {
@@ -181,6 +185,12 @@ type createMaterial = {
 type Show3DAction = {
   type: typeof ACTION_SHOW_3D;
 };
+type ShowComponentControlAction = {
+  type: typeof ACTION_SHOW_COMPONENT_CONTROL;
+  payload: {
+    room: Room;
+  };
+};
 
 export type AppActiontypes =
   | AddRoomAction
@@ -197,4 +207,5 @@ export type AppActiontypes =
   | SwitchCurrentFloorAction
   | Show3DAction
   | createConstruction
-  | createMaterial;
+  | createMaterial
+  | ShowComponentControlAction;

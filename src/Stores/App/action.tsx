@@ -56,7 +56,6 @@ export const switchFloor = (payload: any) => ({
   type: ACTION_CURRENTFLOOR_SWITCH,
   payload,
 });
-export const show3D = () => ({ type: ACTION_SHOW_3D });
 
 export const createConstruction = (payload: any) => ({
   type: 'CONSTRUCTION_CREATE',
@@ -64,5 +63,11 @@ export const createConstruction = (payload: any) => ({
 });
 export const createMaterial = (payload: any) => ({
   type: 'MATERIAL_CREATE',
+  payload,
+});
+
+export const show3D = () => ({ type: ACTION_SHOW_3D });
+export const showComponentControl = (payload: any) => ({
+  type: ACTION_SHOW_3D,
   payload,
 });
