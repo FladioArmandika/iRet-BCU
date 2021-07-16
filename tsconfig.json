@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/icons"],
+      "@assets/*": ["src/assets/*"],
       "@type/*": ["./src/types/*"],
       "@stores/*": ["src/stores/*"],
       "@styles/*": ["./src/styles/*"],

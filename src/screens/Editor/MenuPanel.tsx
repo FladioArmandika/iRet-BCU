@@ -28,8 +28,9 @@ import {
 } from '@assets/icons';
 import { rootState } from '@stores/createStore';
 import { Construction, Floor, RoomConstruction } from '@type/index';
-import idGenerator from '../Helpers/idGenerator';
-import { generateTxt } from '../Helpers/generateTxt';
+import { colors } from '../../constants/colors';
+import idGenerator from '../../components/Helpers/idGenerator';
+import { generateTxt } from '../../components/Helpers/generateTxt';
 
 interface Props {
   goToConstructionManagement(): void;
@@ -55,10 +56,23 @@ interface State {
   currentFloorId: string;
 }
 
-const Panel: React.FC<Props> = (props) => {
+const MenuPanel: React.FC<Props> = (props) => {
   const dispatch = useDispatch();
 
-  const colors = useSelector((state: rootState) => state.app.colors);
+  const colorsList = [
+    colors.color1,
+    colors.color2,
+    colors.color3,
+    colors.color4,
+    colors.color5,
+    colors.color6,
+    colors.color7,
+    colors.color8,
+    colors.color9,
+    colors.color10,
+    colors.color11,
+    colors.color12,
+  ];
   const rooms = useSelector((state: rootState) => state.app.rooms);
   const floors = useSelector((state: rootState) => state.app.floors);
   const currentFloor = useSelector(
@@ -76,7 +90,7 @@ const Panel: React.FC<Props> = (props) => {
       width: 10,
       height: 10,
       depth: 4,
-      color: colors[rooms.length],
+      color: colorsList[rooms.length],
       isOverlap: false,
       x: 0,
       y: 0,
@@ -280,7 +294,7 @@ const Panel: React.FC<Props> = (props) => {
           />
 
           <View style={css('flex-row flex-wrap mt-2')}>
-            {colors.map((color) => (
+            {colorsList.map((color) => (
               <TouchableOpacity
                 key={color}
                 onPress={() => handleChange(color, 'color')}
@@ -392,10 +406,11 @@ const Panel: React.FC<Props> = (props) => {
         </Modal>
       )}
       {/* <View style={css('flex-row items-start pt-2 px-4  h-14')}> */}
+
       <View
         style={css('h-20 w-full px-4 flex-row items-center justify-between')}
       >
-        <View style={css('flex-row w-2/3')}>
+        <ScrollView horizontal contentContainerStyle={css('flex-row w-2/3')}>
           {floors.map((floor, index) => (
             <View style={css('mr-4 ')} key={index}>
               <Button
@@ -410,7 +425,7 @@ const Panel: React.FC<Props> = (props) => {
             style={{ width: 100 }}
             onPress={() => addNewFloor()}
           />
-        </View>
+        </ScrollView>
         <View style={css('flex flex-row items-center w-1/3 justify-end')}>
           <TouchableOpacity
             onPress={() => goTo3DScreen()}
@@ -491,4 +506,4 @@ const Panel: React.FC<Props> = (props) => {
   );
 };
 
-export default Panel;
+export default MenuPanel;

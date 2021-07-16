@@ -9,6 +9,8 @@ import {
   ACTION_ROOM_UPDATE,
   ACTION_ROOM_WALLS_MATERIAL,
   ACTION_SHOW_3D,
+  ACTION_SHOW_COMPONENT_CONTROL,
+  ACTION_SHOW_ROOM_MOVED,
   ACTION_WINDOW_ADD,
   ACTION_WINDOW_ATTACH_TO_ROOM,
   ACTION_WINDOW_UPDATE,
@@ -56,7 +58,6 @@ export const switchFloor = (payload: any) => ({
   type: ACTION_CURRENTFLOOR_SWITCH,
   payload,
 });
-export const show3D = () => ({ type: ACTION_SHOW_3D });
 
 export const createConstruction = (payload: any) => ({
   type: 'CONSTRUCTION_CREATE',
@@ -64,5 +65,15 @@ export const createConstruction = (payload: any) => ({
 });
 export const createMaterial = (payload: any) => ({
   type: 'MATERIAL_CREATE',
+  payload,
+});
+
+export const show3D = () => ({ type: ACTION_SHOW_3D });
+export const showComponentControl = (payload: any) => ({
+  type: ACTION_SHOW_COMPONENT_CONTROL,
+  payload,
+});
+export const showRoomMoved = (payload: any) => ({
+  type: ACTION_SHOW_ROOM_MOVED,
   payload,
 });

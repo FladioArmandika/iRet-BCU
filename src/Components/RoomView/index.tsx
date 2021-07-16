@@ -15,6 +15,7 @@ import {
   updateDoor,
   updateWindow,
   updateWallMaterials,
+  showComponentControl
 } from '@stores/app/action';
 import { Label } from '@components/index';
 // @ts-ignore
@@ -86,6 +87,11 @@ const RoomView: React.FC<Props> = ({
     stateRef.current = state;
   }, [state]);
 
+  const roomMovedRef = useRef<Room | null>(null);
+  useEffect(() => {
+    roomMovedRef.current = app.roomMoved;
+  }, [app.roomMoved]);
+
   const currentFloorRef = useRef<Floor>(app.currentFloor);
   useEffect(() => {
     currentFloorRef.current = app.currentFloor;
@@ -107,10 +113,15 @@ const RoomView: React.FC<Props> = ({
     event: GestureResponderEvent,
     gestureState: PanResponderGestureState,
   ) => {
+    dispatch(
+      showComponentControl({
+        roomId: stateRef.current.id
+      })
+    )
     setState((prevState) => ({ ...prevState, active: true }));
   };
   const handlePanResponderEnd = (
-    event: GestureResponderEvent,
+    event: GestureResponderEvent, 
     gestureState: PanResponderGestureState,
   ) => {
     setState((prevState) => ({ ...prevState, active: false }));
@@ -144,9 +155,9 @@ const RoomView: React.FC<Props> = ({
 
   const handlePanResponderMove = (
     event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
+    gestureState: PanResponderGestureState, 
   ) => {
-    if (!isPreviousLevel && !isLowerLevel) {
+    if (!isPreviousLevel && !isLowerLevel && roomMovedRef.current) {
       const newX =
         ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
       const newY =
