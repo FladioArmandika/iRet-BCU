@@ -1,19 +1,14 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  GestureResponderEvent,
-  PanResponder,
-  PanResponderGestureState,
-  View,
-} from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from "react";
+import { GestureResponderEvent, PanResponder, PanResponderGestureState, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
-import { getColor } from '@styles/index';
-import { updateWindow, attachWindowToRoom } from '@stores/app/action';
-import { rootState } from '@stores/createStore';
-import { Floor, Room } from '@type/index';
+import { getColor } from "@styles/index";
+import { updateWindow, attachWindowToRoom } from "@stores/app/action";
+import { rootState } from "@stores/createStore";
+import { Floor, Room } from "@type/index";
 
 interface Props {
   id: string;
@@ -40,20 +35,13 @@ interface State {
   orientation: number;
 }
 
-const WindowView: React.FC<Props> = ({
-  id,
-  grid,
-  isLowerLevel,
-  isPreviousLevel,
-  isRoomMoving,
-  children,
-}) => {
+const WindowView: React.FC<Props> = ({ id, grid, isLowerLevel, isPreviousLevel, isRoomMoving, children }) => {
   const dispatch = useDispatch();
   const app = useSelector((state: rootState) => state.app);
   const [state, setState] = useState<State>({
-    id: '',
-    name: '',
-    color: 'gray-600',
+    id: "",
+    name: "",
+    color: "gray-600",
     width: 0,
     height: 0,
     x: 0,
@@ -90,7 +78,7 @@ const WindowView: React.FC<Props> = ({
     if (isRoomMoving) {
       const newWindow: any = app.currentFloor.windows.find((x) => x.id === id);
       // eslint-disable-next-line no-console
-      console.log('UPDATE WINDOW');
+      console.log("UPDATE WINDOW");
       // eslint-disable-next-line no-console
       console.log(newWindow);
       if (newWindow.x !== state.x || newWindow.y !== state.y) {
@@ -105,29 +93,18 @@ const WindowView: React.FC<Props> = ({
     }
   }, [app]);
 
-  const handlePanResponderGrant = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderGrant = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     setState((prevState) => ({ ...prevState, active: true }));
   };
-  const handlePanResponderEnd = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderEnd = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     setState((prevState) => ({ ...prevState, active: false }));
 
     // CHECKBORDER
     const plots = plotingRoom();
     let { newX, newY, newOrientation, wallAttached } = findNearestSide(plots);
-    const newWidth =
-      newOrientation !== stateRef.current.orientation
-        ? stateRef.current.height
-        : stateRef.current.width;
+    const newWidth = newOrientation !== stateRef.current.orientation ? stateRef.current.height : stateRef.current.width;
     const newHeight =
-      newOrientation !== stateRef.current.orientation
-        ? stateRef.current.width
-        : stateRef.current.height;
+      newOrientation !== stateRef.current.orientation ? stateRef.current.width : stateRef.current.height;
 
     let roomAttached: Room = {} as Room;
     for (let i = 0; i < plots.length; i++) {
@@ -187,13 +164,10 @@ const WindowView: React.FC<Props> = ({
           wall: wallAttached,
         },
         room: roomAttached.id,
-      }),
+      })
     );
   };
-  const handlePanResponderMove = (
-    event: GestureResponderEvent,
-    gestureState: any,
-  ) => {
+  const handlePanResponderMove = (event: GestureResponderEvent, gestureState: any) => {
     let isOverlap = false;
     const newX = ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
     const newY = ((stateRef.current.previousY + gestureState.dy) / grid) * grid;
@@ -323,52 +297,28 @@ const WindowView: React.FC<Props> = ({
 
         if (windowToRoom[nearestPointIndex].newOrientation === 1) {
           const tempNewX = windowToRoom[nearestPointIndex].point.x;
-          if (
-            isWindowInsideThisRoom(tempNewX, newY, rooms[nearestPointIndex])
-          ) {
+          if (isWindowInsideThisRoom(tempNewX, newY, rooms[nearestPointIndex])) {
             newX = tempNewX;
           } else {
-            const y1 = Math.abs(
-              windowToRoom[nearestPointIndex].room[0].y - newY,
-            );
-            const y2 = Math.abs(
-              windowToRoom[nearestPointIndex].room[2].y - newY,
-            );
+            const y1 = Math.abs(windowToRoom[nearestPointIndex].room[0].y - newY);
+            const y2 = Math.abs(windowToRoom[nearestPointIndex].room[2].y - newY);
 
             let closestY;
             if (y1 < y2) {
               closestY = windowToRoom[nearestPointIndex].room[0].y;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isWindowInsideThisRoom(
-                  newX,
-                  closestY,
-                  rooms[nearestPointIndex],
-                )
-              )
+              if (!isWindowInsideThisRoom(newX, closestY, rooms[nearestPointIndex]))
                 newX = windowToRoom[nearestPointIndex].room[0].x;
             } else {
               closestY = windowToRoom[nearestPointIndex].room[2].y;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isWindowInsideThisRoom(
-                  newX,
-                  closestY,
-                  rooms[nearestPointIndex],
-                )
-              )
+              if (!isWindowInsideThisRoom(newX, closestY, rooms[nearestPointIndex]))
                 newX = windowToRoom[nearestPointIndex].room[1].x;
             }
 
-            if (
-              isWindowInsideThisRoom(newX, closestY, rooms[nearestPointIndex])
-            ) {
-              const x11 = Math.abs(
-                windowToRoom[nearestPointIndex].room[0].x - x,
-              );
-              const x12 = Math.abs(
-                windowToRoom[nearestPointIndex].room[1].x - x,
-              );
+            if (isWindowInsideThisRoom(newX, closestY, rooms[nearestPointIndex])) {
+              const x11 = Math.abs(windowToRoom[nearestPointIndex].room[0].x - x);
+              const x12 = Math.abs(windowToRoom[nearestPointIndex].room[1].x - x);
 
               if (x11 < x12) newX = windowToRoom[nearestPointIndex].room[0].x;
               else newX = windowToRoom[nearestPointIndex].room[1].x - 50;
@@ -379,52 +329,28 @@ const WindowView: React.FC<Props> = ({
           }
         } else {
           const tempNewY = windowToRoom[nearestPointIndex].point.y;
-          if (
-            isWindowInsideThisRoom(newX, tempNewY, rooms[nearestPointIndex])
-          ) {
+          if (isWindowInsideThisRoom(newX, tempNewY, rooms[nearestPointIndex])) {
             newY = tempNewY;
           } else {
-            const x1 = Math.abs(
-              windowToRoom[nearestPointIndex].room[0].x - newX,
-            );
-            const x2 = Math.abs(
-              windowToRoom[nearestPointIndex].room[1].x - newX,
-            );
+            const x1 = Math.abs(windowToRoom[nearestPointIndex].room[0].x - newX);
+            const x2 = Math.abs(windowToRoom[nearestPointIndex].room[1].x - newX);
 
             let closestX;
             if (x1 < x2) {
               closestX = windowToRoom[nearestPointIndex].room[0].x;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isWindowInsideThisRoom(
-                  closestX,
-                  newY,
-                  rooms[nearestPointIndex],
-                )
-              )
+              if (!isWindowInsideThisRoom(closestX, newY, rooms[nearestPointIndex]))
                 newY = windowToRoom[nearestPointIndex].room[0].y;
             } else {
               closestX = windowToRoom[nearestPointIndex].room[1].x;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isWindowInsideThisRoom(
-                  closestX,
-                  newY,
-                  rooms[nearestPointIndex],
-                )
-              )
+              if (!isWindowInsideThisRoom(closestX, newY, rooms[nearestPointIndex]))
                 newY = windowToRoom[nearestPointIndex].room[0].y;
             }
 
-            if (
-              isWindowInsideThisRoom(closestX, newY, rooms[nearestPointIndex])
-            ) {
-              const y11 = Math.abs(
-                windowToRoom[nearestPointIndex].room[0].y - y,
-              );
-              const y12 = Math.abs(
-                windowToRoom[nearestPointIndex].room[2].y - y,
-              );
+            if (isWindowInsideThisRoom(closestX, newY, rooms[nearestPointIndex])) {
+              const y11 = Math.abs(windowToRoom[nearestPointIndex].room[0].y - y);
+              const y12 = Math.abs(windowToRoom[nearestPointIndex].room[2].y - y);
 
               if (y11 < y12) newY = windowToRoom[nearestPointIndex].room[0].y;
               else newY = windowToRoom[nearestPointIndex].room[2].y - 50;
@@ -456,24 +382,16 @@ const WindowView: React.FC<Props> = ({
           y: currentFloorRef.current.rooms[i].y,
         },
         {
-          x:
-            currentFloorRef.current.rooms[i].x +
-            currentFloorRef.current.rooms[i].width,
+          x: currentFloorRef.current.rooms[i].x + currentFloorRef.current.rooms[i].width,
           y: currentFloorRef.current.rooms[i].y,
         },
         {
           x: currentFloorRef.current.rooms[i].x,
-          y:
-            currentFloorRef.current.rooms[i].y +
-            currentFloorRef.current.rooms[i].height,
+          y: currentFloorRef.current.rooms[i].y + currentFloorRef.current.rooms[i].height,
         },
         {
-          x:
-            currentFloorRef.current.rooms[i].x +
-            currentFloorRef.current.rooms[i].width,
-          y:
-            currentFloorRef.current.rooms[i].y +
-            currentFloorRef.current.rooms[i].height,
+          x: currentFloorRef.current.rooms[i].x + currentFloorRef.current.rooms[i].width,
+          y: currentFloorRef.current.rooms[i].y + currentFloorRef.current.rooms[i].height,
         },
       ]);
     }
@@ -492,7 +410,7 @@ const WindowView: React.FC<Props> = ({
       onPanResponderEnd: (e, gestureState) => true,
       onPanResponderTerminate: handlePanResponderEnd,
       onPanResponderTerminationRequest: () => true,
-    }),
+    })
   ).current;
 
   return (
@@ -506,9 +424,9 @@ const WindowView: React.FC<Props> = ({
           top: 100,
           width: state.width,
           height: state.height,
-          position: 'absolute',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: "absolute",
+          alignItems: "center",
+          justifyContent: "center",
         },
         {
           transform: [{ translateX: state.x }, { translateY: state.y }],

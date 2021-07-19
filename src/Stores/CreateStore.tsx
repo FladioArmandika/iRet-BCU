@@ -1,7 +1,7 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers } from "redux";
 
-import app from './app/reducer';
-import { AppState } from './App/types';
+import app from "@stores/app/reducer";
+import { AppState } from "@stores/app/types";
 
 export interface rootState {
   app: AppState;

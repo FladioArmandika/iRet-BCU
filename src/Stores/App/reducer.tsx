@@ -20,6 +20,8 @@ import {
   ACTION_ROOM_UPDATE,
   ACTION_ROOM_WALLS_MATERIAL,
   ACTION_SHOW_3D,
+  ACTION_SHOW_COMPONENT_CONTROL,
+  ACTION_SHOW_ROOM_MOVED,
   ACTION_WINDOW_ADD,
   ACTION_WINDOW_ATTACH_TO_ROOM,
   ACTION_WINDOW_UPDATE,
@@ -152,6 +154,8 @@ const initialState: AppState = {
     windowGlazing: [],
     windowGas: [],
   },
+  roomFocused: null,
+  roomMoved: null,
 };
 
 export function appReducer(
@@ -470,12 +474,6 @@ export function appReducer(
         currentFloor: action.payload,
       };
     }
-    case ACTION_SHOW_3D: {
-      return {
-        ...state,
-        show3D: !state.show3D,
-      };
-    }
     case ACTION_CONSTRUCTION_CREATE: {
       const { construction } = state;
       construction.push(action.payload);
@@ -494,6 +492,26 @@ export function appReducer(
       return {
         ...state,
         materials,
+      };
+    }
+    case ACTION_SHOW_3D: {
+      return {
+        ...state,
+        show3D: !state.show3D,
+      };
+    }
+    case ACTION_SHOW_COMPONENT_CONTROL: {
+      return {
+        ...state,
+        roomFocused: state.rooms.find((room: Room) => room.id === action.payload.roomId) as Room
+      };
+    }
+    case ACTION_SHOW_ROOM_MOVED: {
+      console.log('id')
+      console.log(action.payload.roomId)
+      return {
+        ...state,
+        roomMoved: state.rooms.find((room: Room) => room.id === action.payload.roomId) as Room
       };
     }
     default:

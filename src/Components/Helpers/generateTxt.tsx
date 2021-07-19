@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import { MaterialList } from '../../stores/App/types';
+import { MaterialList } from '@stores/app/types';
 import {
   Zone,
   Coordinate,

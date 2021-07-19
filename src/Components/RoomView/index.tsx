@@ -1,26 +1,15 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  GestureResponderEvent,
-  ImageBackground,
-  PanResponder,
-  PanResponderGestureState,
-  View,
-} from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { css, getColor } from '@styles/index';
-import {
-  updateRoom,
-  updateDoor,
-  updateWindow,
-  updateWallMaterials,
-} from '@stores/app/action';
-import { Label } from '@components/index';
+import React, { useEffect, useRef, useState } from "react";
+import { GestureResponderEvent, ImageBackground, PanResponder, PanResponderGestureState, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { css, getColor } from "@styles/index";
+import { updateRoom, updateDoor, updateWindow, updateWallMaterials, showComponentControl } from "@stores/app/action";
+import { Label } from "@components/index";
 // @ts-ignore
-import Grid from '@assets/icons';
-import { Floor, Room, RoomConstruction, Window } from '@type/index';
-import { rootState } from '@stores/createStore';
+import Grid from "@assets/icons";
+import { Floor, Room, RoomConstruction, Window } from "@type/index";
+import { rootState } from "@stores/createStore";
 
 interface Props {
   isLowerLevel: boolean;
@@ -65,9 +54,9 @@ const RoomView: React.FC<Props> = ({
   const dispatch = useDispatch();
   const app = useSelector((state: rootState) => state.app);
   const [state, setState] = useState<State>({
-    id: '',
-    name: '',
-    color: 'gray-400',
+    id: "",
+    name: "",
+    color: "gray-400",
     width: 0,
     height: 0,
     x: 0,
@@ -86,6 +75,11 @@ const RoomView: React.FC<Props> = ({
     stateRef.current = state;
   }, [state]);
 
+  const roomMovedRef = useRef<Room | null>(null);
+  useEffect(() => {
+    roomMovedRef.current = app.roomMoved;
+  }, [app.roomMoved]);
+
   const currentFloorRef = useRef<Floor>(app.currentFloor);
   useEffect(() => {
     currentFloorRef.current = app.currentFloor;
@@ -103,16 +97,15 @@ const RoomView: React.FC<Props> = ({
     }));
   }, []);
 
-  const handlePanResponderGrant = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderGrant = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+    dispatch(
+      showComponentControl({
+        roomId: stateRef.current.id,
+      })
+    );
     setState((prevState) => ({ ...prevState, active: true }));
   };
-  const handlePanResponderEnd = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderEnd = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     setState((prevState) => ({ ...prevState, active: false }));
     const x: number = stateRef.current.xObj;
     const y: number = stateRef.current.yObj;
@@ -138,19 +131,14 @@ const RoomView: React.FC<Props> = ({
         y,
         overlap: false,
         floor: currentFloorRef.current.id,
-      }),
+      })
     );
   };
 
-  const handlePanResponderMove = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
-    if (!isPreviousLevel && !isLowerLevel) {
-      const newX =
-        ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
-      const newY =
-        ((stateRef.current.previousY + gestureState.dy) / grid) * grid;
+  const handlePanResponderMove = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+    if (!isPreviousLevel && !isLowerLevel && roomMovedRef.current) {
+      const newX = ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
+      const newY = ((stateRef.current.previousY + gestureState.dy) / grid) * grid;
 
       const isOverlap = isRoomOverlap(newX, newY);
 
@@ -175,7 +163,7 @@ const RoomView: React.FC<Props> = ({
                       y: newDoorY,
                       floor: currentFloorRef.current.id,
                       room: room.id,
-                    }),
+                    })
                   );
                 }
               });
@@ -194,7 +182,7 @@ const RoomView: React.FC<Props> = ({
                       y: newWindowY,
                       floor: currentFloorRef.current.id,
                       room: room.id,
-                    }),
+                    })
                   );
                 }
               });
@@ -232,7 +220,7 @@ const RoomView: React.FC<Props> = ({
       onPanResponderEnd: (e, gestureState) => true,
       onPanResponderTerminate: handlePanResponderEnd,
       onPanResponderTerminationRequest: () => true,
-    }),
+    })
   ).current;
 
   const isRoomOverlap = (newX: number, newY: number) => {
@@ -252,16 +240,12 @@ const RoomView: React.FC<Props> = ({
 
     // CHECK POSSIBLE AREA AT PREVIOUS FLOOR
     if (currentFloorRef.current.level !== 1) {
-      const prevFloor: Floor = app.floors.find(
-        (x) => x.level === currentFloorRef.current.level - 1,
-      ) as Floor;
+      const prevFloor: Floor = app.floors.find((x) => x.level === currentFloorRef.current.level - 1) as Floor;
       for (let i = 0; i < prevFloor.rooms.length; i++) {
         const insideRoom =
-          newX + stateRef.current?.width <=
-            prevFloor.rooms[i].x + prevFloor.rooms[i].width &&
+          newX + stateRef.current?.width <= prevFloor.rooms[i].x + prevFloor.rooms[i].width &&
           newX >= prevFloor.rooms[i].x &&
-          newY + stateRef.current?.height <=
-            prevFloor.rooms[i].y + prevFloor.rooms[i].height &&
+          newY + stateRef.current?.height <= prevFloor.rooms[i].y + prevFloor.rooms[i].height &&
           newY >= prevFloor.rooms[i].y;
         if (insideRoom) {
           isOverlap = false;
@@ -288,9 +272,9 @@ const RoomView: React.FC<Props> = ({
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
-                'R3Construct',
+                "R3Construct",
               ],
-            }),
+            })
           );
         }
         if (x + stateRef.current.width === room.x) {
@@ -300,11 +284,11 @@ const RoomView: React.FC<Props> = ({
               room: stateRef.current.id,
               wall: [
                 stateRef.current.construction.wall[0],
-                'R3Construct',
+                "R3Construct",
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
               ],
-            }),
+            })
           );
         }
 
@@ -314,12 +298,12 @@ const RoomView: React.FC<Props> = ({
               floor: currentFloorRef.current.id,
               room: stateRef.current.id,
               wall: [
-                'R3Construct',
+                "R3Construct",
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
               ],
-            }),
+            })
           );
         }
 
@@ -331,10 +315,10 @@ const RoomView: React.FC<Props> = ({
               wall: [
                 stateRef.current.construction.wall[0],
                 stateRef.current.construction.wall[0],
-                'R3Construct',
+                "R3Construct",
                 stateRef.current.construction.wall[0],
               ],
-            }),
+            })
           );
         }
       }
@@ -348,21 +332,17 @@ const RoomView: React.FC<Props> = ({
       // }}
       style={[
         {
-          backgroundColor: isPreviousLevel
-            ? getColor('gray-200')
-            : getColor(state.color),
-          borderColor: isPreviousLevel
-            ? getColor('gray-200')
-            : getColor(state.color),
+          backgroundColor: isPreviousLevel ? getColor("gray-200") : getColor(state.color),
+          borderColor: isPreviousLevel ? getColor("gray-200") : getColor(state.color),
         },
         {
           left: 50,
           top: 100,
           width,
           height,
-          position: 'absolute',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: "absolute",
+          alignItems: "center",
+          justifyContent: "center",
         },
         {
           transform: [{ translateX: state.x }, { translateY: state.y }],
@@ -382,7 +362,7 @@ const RoomView: React.FC<Props> = ({
           {/* <Label style={css("font-medium text-white")}>{this.name}</Label> */}
         </ImageBackground>
       ) : (
-        <Label style={css('font-medium text-white')}>{name}</Label>
+        <Label style={css("font-medium text-white")}>{name}</Label>
       )}
     </View>
   );

@@ -1,12 +1,12 @@
 import React from 'react';
-import { KeyboardType, TextInput } from 'react-native';
+import { KeyboardType, TextInput, ViewStyle, StyleProp} from 'react-native';
 import { css } from '@styles/index';
 
 interface Props {
   keyboardType?: KeyboardType;
   placeholder: string;
   value: any;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
   onChange(e: any): void;
 }
 

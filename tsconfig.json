@@ -10,18 +10,17 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/icons"],
-      "@type/*": ["./src/types/*"],
-      "@stores/*": ["src/stores/*"],
-      "@styles/*": ["./src/styles/*"],
-      "@components/*": ["src/components/*"],
-      "@screens/*": ["./src/screens/*"],
+      "@assets/*": ["./src/assets/*", "./src/assets/*/index"],
+      "@type/*": ["./src/types/*", "./src/types/*/index"],
+      "@stores/*": ["./src/stores/*", "./src/stores/*/index"],
+      "@styles/*": ["./src/styles/*", "./src/styles/*/index"],
+      "@components/*": ["./src/components/*", "./src/components/*/index"],
+      "@screens/*": ["./src/screens/*", "./src/screens/*/index"],
     }
   },
   "include": [
     "src",
     "App.tsx",
-    "custom_types"
-  ],
+    "custom_types"],
   "extends": "expo/tsconfig.base"
 }

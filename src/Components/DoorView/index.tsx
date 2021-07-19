@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  GestureResponderEvent,
-  PanResponder,
-  PanResponderGestureState,
-  View,
-} from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useRef, useState } from "react";
+import { GestureResponderEvent, PanResponder, PanResponderGestureState, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
-import { getColor } from '@styles/index';
-import { updateDoor, attachDoorToRoom } from '@stores/app/action';
-import { rootState } from '@stores/createStore';
-import { Door, Room } from '@type/index';
+import { getColor } from "@styles/index";
+import { updateDoor, attachDoorToRoom } from "@stores/app/action";
+import { rootState } from "@stores/createStore";
+import { Door, Room } from "@type/index";
 
 interface Props {
   id: string;
@@ -39,26 +34,17 @@ interface State {
   orientation: number;
 }
 
-const DoorView: React.FC<Props> = ({
-  grid,
-  id,
-  isLowerLevel,
-  isPreviousLevel,
-  isRoomMoving,
-  children,
-}) => {
+const DoorView: React.FC<Props> = ({ grid, id, isLowerLevel, isPreviousLevel, isRoomMoving, children }) => {
   const dispatch = useDispatch();
 
   const doors = useSelector((state: rootState) => state.app.doors);
   const app = useSelector((state: rootState) => state.app);
-  const currentFloor = useSelector(
-    (state: rootState) => state.app.currentFloor,
-  );
+  const currentFloor = useSelector((state: rootState) => state.app.currentFloor);
 
   const [state, setState] = useState<State>({
-    id: '',
-    name: '',
-    color: 'gray-600',
+    id: "",
+    name: "",
+    color: "gray-600",
     width: 0,
     height: 0,
     x: 0,
@@ -99,30 +85,19 @@ const DoorView: React.FC<Props> = ({
     }
   }, [app]);
 
-  const handlePanResponderGrant = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderGrant = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     setState((prevState) => ({ ...prevState, active: true }));
   };
-  const handlePanResponderEnd = (
-    event: GestureResponderEvent,
-    gestureState: PanResponderGestureState,
-  ) => {
+  const handlePanResponderEnd = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     setState((prevState) => ({ ...prevState, active: false }));
 
     // CHECKBORDER
     const plots = plotingRoom();
     // eslint-disable-next-line prefer-const
     let { newX, newY, newOrientation } = findNearestSide(plots);
-    const newWidth =
-      newOrientation !== stateRef.current.orientation
-        ? stateRef.current.height
-        : stateRef.current.width;
+    const newWidth = newOrientation !== stateRef.current.orientation ? stateRef.current.height : stateRef.current.width;
     const newHeight =
-      newOrientation !== stateRef.current.orientation
-        ? stateRef.current.width
-        : stateRef.current.height;
+      newOrientation !== stateRef.current.orientation ? stateRef.current.width : stateRef.current.height;
 
     let roomAttached: any;
     for (let i = 0; i < plots.length; i++) {
@@ -162,7 +137,7 @@ const DoorView: React.FC<Props> = ({
         overlap: true,
         floor: currentFloor.id,
         room: roomAttached.id,
-      }),
+      })
     );
     dispatch(
       attachDoorToRoom({
@@ -173,7 +148,7 @@ const DoorView: React.FC<Props> = ({
           y: newY,
         },
         room: roomAttached.id,
-      }),
+      })
     );
   };
 
@@ -315,22 +290,16 @@ const DoorView: React.FC<Props> = ({
             if (y1 < y2) {
               closestY = doorToBox[nearestPointIndex].room[0].y;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex])
-              )
+              if (!isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex]))
                 newX = doorToBox[nearestPointIndex].room[0].x;
             } else {
               closestY = doorToBox[nearestPointIndex].room[2].y;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex])
-              )
+              if (!isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex]))
                 newX = doorToBox[nearestPointIndex].room[1].x;
             }
 
-            if (
-              isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex])
-            ) {
+            if (isDoorInsideThisRoom(newX, closestY, rooms[nearestPointIndex])) {
               const x11 = Math.abs(doorToBox[nearestPointIndex].room[0].x - x);
               const x12 = Math.abs(doorToBox[nearestPointIndex].room[1].x - x);
 
@@ -353,22 +322,16 @@ const DoorView: React.FC<Props> = ({
             if (x1 < x2) {
               closestX = doorToBox[nearestPointIndex].room[0].x;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex])
-              )
+              if (!isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex]))
                 newY = doorToBox[nearestPointIndex].room[0].y;
             } else {
               closestX = doorToBox[nearestPointIndex].room[1].x;
               // CHECK IF IT's STILL NOT INSIDE ROOM
-              if (
-                !isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex])
-              )
+              if (!isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex]))
                 newY = doorToBox[nearestPointIndex].room[0].y;
             }
 
-            if (
-              isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex])
-            ) {
+            if (isDoorInsideThisRoom(closestX, newY, rooms[nearestPointIndex])) {
               const y11 = Math.abs(doorToBox[nearestPointIndex].room[0].y - y);
               const y12 = Math.abs(doorToBox[nearestPointIndex].room[2].y - y);
 
@@ -427,7 +390,7 @@ const DoorView: React.FC<Props> = ({
       onPanResponderEnd: (e, gestureState) => true,
       onPanResponderTerminate: handlePanResponderEnd,
       onPanResponderTerminationRequest: () => true,
-    }),
+    })
   ).current;
 
   return (
@@ -438,9 +401,9 @@ const DoorView: React.FC<Props> = ({
           top: 100,
           width: state.width,
           height: state.height,
-          position: 'absolute',
-          alignItems: 'center',
-          justifyContent: 'center',
+          position: "absolute",
+          alignItems: "center",
+          justifyContent: "center",
         },
         {
           transform: [{ translateX: state.x }, { translateY: state.y }],

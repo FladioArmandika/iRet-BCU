@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Text } from 'react-native';
 
 interface Props {
-  style: any;
+  style?: any;
   children: ReactNode;
 }
 

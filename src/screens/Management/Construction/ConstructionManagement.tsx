@@ -7,7 +7,7 @@ import { css, getColor } from '@styles/index';
 import { Construction } from '@type/index';
 import { IconConstructWall } from '@assets/icons';
 import { Button } from '@components/index';
-import { rootState } from '@stores/CreateStore';
+import { rootState } from '@stores/createStore';
 
 export default function ConstructionContainer() {
   const navigation = useNavigation();
