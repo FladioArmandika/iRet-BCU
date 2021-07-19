@@ -97,6 +97,7 @@ const RoomView: React.FC<Props> = ({
     }));
   }, []);
 
+<<<<<<< HEAD
   const handlePanResponderGrant = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     dispatch(
       showComponentControl({
@@ -106,6 +107,23 @@ const RoomView: React.FC<Props> = ({
     setState((prevState) => ({ ...prevState, active: true }));
   };
   const handlePanResponderEnd = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+=======
+  const handlePanResponderGrant = (
+    event: GestureResponderEvent,
+    gestureState: PanResponderGestureState,
+  ) => {
+    dispatch(
+      showComponentControl({
+        roomId: stateRef.current.id
+      })
+    )
+    setState((prevState) => ({ ...prevState, active: true }));
+  };
+  const handlePanResponderEnd = (
+    event: GestureResponderEvent, 
+    gestureState: PanResponderGestureState,
+  ) => {
+>>>>>>> b658e5618cf3d51323836366204b945532ef932b
     setState((prevState) => ({ ...prevState, active: false }));
     const x: number = stateRef.current.xObj;
     const y: number = stateRef.current.yObj;
@@ -135,10 +153,22 @@ const RoomView: React.FC<Props> = ({
     );
   };
 
+<<<<<<< HEAD
   const handlePanResponderMove = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
     if (!isPreviousLevel && !isLowerLevel && roomMovedRef.current) {
       const newX = ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
       const newY = ((stateRef.current.previousY + gestureState.dy) / grid) * grid;
+=======
+  const handlePanResponderMove = (
+    event: GestureResponderEvent,
+    gestureState: PanResponderGestureState, 
+  ) => {
+    if (!isPreviousLevel && !isLowerLevel && roomMovedRef.current) {
+      const newX =
+        ((stateRef.current.previousX + gestureState.dx) / grid) * grid;
+      const newY =
+        ((stateRef.current.previousY + gestureState.dy) / grid) * grid;
+>>>>>>> b658e5618cf3d51323836366204b945532ef932b
 
       const isOverlap = isRoomOverlap(newX, newY);
 
